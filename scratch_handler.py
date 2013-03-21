@@ -126,7 +126,7 @@ class ScratchListener(threading.Thread):
             new_pin_bitp |= one_bit_mask # set the ones
 
             if new_pin_bitp != old_pin_bitp:
-                pfio.write(pfio.OUTPUT_PORT, new_pin_bitp) # write the new bit pattern
+                pfio.write(new_pin_bitp, pfio.OUTPUT_PORT) # write the new bit pattern
 
 
 def input_handler(interrupted_bit, input_byte):
