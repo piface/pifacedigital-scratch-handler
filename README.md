@@ -33,3 +33,5 @@ each pin named like so:
     piface-output6
     piface-output7
     piface-output8
+
+Here is an [image](http://i.imgur.com/2Xpb7k4.png) of a basic Scratch program.
