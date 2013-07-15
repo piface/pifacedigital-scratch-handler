@@ -12,7 +12,7 @@ Scratch](http://wiki.scratch.mit.edu/wiki/Mesh#Mesh_by_Modification_of_Scratch).
 
 The shift-click the *Share* menu-item and select *Host Mesh*.
 
-Now run the scratch\_handler: 
+Now run the scratch\_handler:
 
     $ python3 scratch_handler.py
 
@@ -34,4 +34,4 @@ each pin named like so:
     piface-output7
     piface-output8
 
-Here is an [image](http://i.imgur.com/2Xpb7k4.png) of a basic Scratch program.
+Here is an [image](http://i.imgur.com/2Xpb7k4.png) of a example Scratch program.

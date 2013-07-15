@@ -1,21 +1,4 @@
 #!/usr/bin/env python3
-"""scratch_handler
-Scratch Handler allows Scratch to talk to PiFace digital through MESH
-Copyright (C) 2013 Thomas Preston (thomasmarkpreston@gmail.com)
-
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-"""
 from array import array
 from time import sleep
 import threading
@@ -132,12 +115,9 @@ class ScratchListener(threading.Thread):
                 self.pifacedigital.output_port.value = new_pin_bitp
 
 
-def input_handler(interrupted_bit, input_byte):
-    """Callback function for when inputs are changed"""
-    pin_num = pifacecommon.get_bit_num(interrupted_bit)
-    value = (interrupted_bit & input_byte) >> pin_num
-    broadcast_pin_update(pin_num, value ^ 1)  # flip bit, inputs: active low
-    return True
+def input_handler(event):
+    """Callback function for when inputs are changed."""
+    broadcast_pin_update(event.pin_num, event.direction ^ 1)
 
 
 def broadcast_pin_update(pin_index, value):
@@ -179,23 +159,24 @@ if __name__ == '__main__':
     pfio.init()
 
     # hook each input to the callback function
-    ifm = pifacecommon.InputFunctionMap()
+    #ifm = pifacecommon.InputFunctionMap()
+    inputlistener = pfio.InputEventListener()
     for i in range(len(SCRATCH_SENSOR_NAME_INPUT)):
-        ifm.register(i, pifacecommon.IN_EVENT_DIR_OFF, input_handler)
-        broadcast_pin_update(i, 0)  # make scratch is aware of the input pins
+        inputlistener.register(i, pfio.IODIR_BOTH, input_handler)
+        broadcast_pin_update(i, 0)  # make scratch aware of the input pins
 
-    # start another thread to handle scratch stuff
-    listener = ScratchListener()
-    listener.start()
+    scratchlistener = ScratchListener()
+    scratchlistener.start()
 
     try:
-        # if an input is pressed, update scratch
-        pfio.wait_for_input(input_func_map=ifm)
+        inputlistener.activate()
     except KeyboardInterrupt:
-        pass
+        print("kb int")
 
-    print("Stopping...", end=" ")
-    listener.stop()
-    listener.join()
-    pfio.deinit()
-    print("Done.")
+    print("ending main thread")
+
+    # print("Stopping...", end=" ")
+    # scratchlistener.stop()
+    # scratchlistener.join()
+    # pfio.deinit()
+    # print("Done.")
