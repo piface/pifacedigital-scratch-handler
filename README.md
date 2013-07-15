@@ -5,8 +5,8 @@ Allows Scratch to control PiFace Digital through MESH.
 
 Depends on [pifacedigitalio](https://github.com/piface/pifacedigitalio).
 
-Usage
-=====
+Use
+===
 First you must [enable Mesh in
 Scratch](http://wiki.scratch.mit.edu/wiki/Mesh#Mesh_by_Modification_of_Scratch).
 
