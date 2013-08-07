@@ -5,7 +5,6 @@ import threading
 import socket
 import sys
 import struct
-import pifacecommon
 
 if "-e" in sys.argv:
     import pifacedigital_emulator as pfio
