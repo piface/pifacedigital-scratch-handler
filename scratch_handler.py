@@ -5,7 +5,6 @@ import threading
 import socket
 import sys
 import struct
-import pifacecommon
 
 
 __version__ = "2.0.1"
