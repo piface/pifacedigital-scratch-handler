@@ -7,6 +7,10 @@ import sys
 import struct
 import pifacecommon
 
+
+__version__ = "2.0.1"
+
+
 if "-e" in sys.argv:
     import pifacedigital_emulator as pfio
     sys.argv.remove("-e")
