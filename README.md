@@ -3,7 +3,16 @@ pifacedigital-scratch-handler
 
 Allows Scratch to control PiFace Digital through MESH.
 
-Depends on [pifacedigitalio](https://github.com/piface/pifacedigitalio).
+Install
+=======
+
+Download the latest release of the scratch handler from
+[here](https://github.com/piface/pifacedigital-scratch-handler/releases) and
+install with:
+
+    $ sudo dpkg -i python3-pifacedigital-scratch-handler_2.0.1-1_all.deb
+
+You may also need to install [pifacedigitalio](https://github.com/piface/pifacedigitalio) first.
 
 Use
 ===
@@ -12,12 +21,9 @@ Scratch](http://wiki.scratch.mit.edu/wiki/Mesh#Mesh_by_Modification_of_Scratch).
 
 The shift-click the *Share* menu-item and select *Host Mesh*.
 
-Now run the scratch\_handler:
+Now run the scratch handler:
 
-    $ python3 scratch_handler.py
-
-Use the **-e** flag to use the scratch\_handler with the PiFace Digital Emulator
-instead of PiFace Digital (if you have it installed).
+    $ pifacedigital-scratch-handler
 
 Scratch
 -------
