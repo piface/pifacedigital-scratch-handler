@@ -6,13 +6,15 @@ Allows Scratch to control PiFace Digital through MESH.
 Install
 =======
 
-Download the latest release of the scratch handler from
-[here](https://github.com/piface/pifacedigital-scratch-handler/releases) and
-install with:
+Make sure you are using the lastest version of Raspbian::
 
-    $ sudo dpkg -i python3-pifacedigital-scratch-handler_2.0.1-1_all.deb
+    $ sudo apt-get update
+    $ sudo apt-get upgrade
 
-You may also need to install [pifacedigitalio](https://github.com/piface/pifacedigitalio) first.
+Install `pifacedigital-scratch-handler` (for Python 3 and 2) with the
+following command::
+
+    $ sudo apt-get install python3-pifacedigital-scratch-handler
 
 Use
 ===
