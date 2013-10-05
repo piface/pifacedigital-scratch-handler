@@ -7,7 +7,7 @@ import sys
 import struct
 
 
-__version__ = "2.0.1"
+__version__ = "2.0.2"
 
 
 if "-e" in sys.argv:
@@ -159,11 +159,11 @@ if __name__ == '__main__':
 
     scratch_socket.settimeout(SOCKET_TIMEOUT)
 
-    pfio.init()
+    pfd = pfio.PiFaceDigital()
 
     # hook each input to the callback function
     #ifm = pifacecommon.InputFunctionMap()
-    inputlistener = pfio.InputEventListener()
+    inputlistener = pfio.InputEventListener(chip=pfd)
     for i in range(len(SCRATCH_SENSOR_NAME_INPUT)):
         inputlistener.register(i, pfio.IODIR_BOTH, input_handler)
         broadcast_pin_update(i, 0)  # make scratch aware of the input pins
