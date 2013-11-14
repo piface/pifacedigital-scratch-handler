@@ -1,6 +1,11 @@
 Change Log
 ==========
 
+v2.0.3
+------
+- Removed desktop icon because this program is automatically installed on
+  Raspbian and the desktop icon shows favoritism. Sorry :-(
+
 v2.0.2
 ------
 - Updated to use pifacedigitalio v3.0.0.
