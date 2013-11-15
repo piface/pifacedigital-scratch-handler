@@ -1,6 +1,10 @@
 Change Log
 ==========
 
+v2.0.4
+------
+- Removed the desktop icon auto-remove in the post-install.
+
 v2.0.3
 ------
 - Removed desktop icon because this program is automatically installed on
