@@ -9,7 +9,7 @@ VERSION_FILE = "scratch_handler.py"
 
 
 def get_version():
-    return '2.0.1'
+    return '2.0.5'
 
 
 setup(

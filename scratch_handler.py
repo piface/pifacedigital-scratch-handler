@@ -7,7 +7,7 @@ import sys
 import struct
 
 
-__version__ = "2.0.4"
+__version__ = "2.0.5"
 
 
 if "-e" in sys.argv:
@@ -21,6 +21,9 @@ PORT = 42001
 DEFAULT_HOST = '127.0.0.1'
 BUFFER_SIZE = 175
 SOCKET_TIMEOUT = 1
+
+MAX_NUM_SOCKET_RESTART = 5
+MAX_NUM_EMPTY_DATA = 5
 
 SCRATCH_SENSOR_NAME_INPUT = (
     'piface-input1',
@@ -44,20 +47,24 @@ SCRATCH_SENSOR_NAME_OUTPUT = (
 
 
 class ScratchListener(threading.Thread):
-    def __init__(self):
+    def __init__(self, host):
         threading.Thread.__init__(self)
         self.last_zero_bit_mask = 0
         self.last_one_bit_mask = 0
         self.pifacedigital = pfio.PiFaceDigital()
+        self.host = host
 
     def stop(self):
         self.alive = False
 
     def run(self):
         self.alive = True
+        # for restarting
+        num_empty_data = 0
+        num_socket_start = 0
+        global scratch_socket
         while self.alive:
             try:
-                global scratch_socket
                 data = scratch_socket.recv(BUFFER_SIZE).decode('utf-8')
                 data = data[4:]  # get rid of the length info
 
@@ -79,6 +86,23 @@ class ScratchListener(threading.Thread):
 
             else:
                 print('received something:', data)
+                if data == ['']:
+                    num_empty_data += 1
+                if num_empty_data >= MAX_NUM_EMPTY_DATA:
+                    if num_socket_start >= MAX_NUM_SOCKET_RESTART:
+                        print("Max number of restart attempts reached, "
+                              "giving up.")
+                        break
+                    else:
+                        # global scratch_socket
+                        scratch_socket.shutdown(socket.SHUT_RD)
+                        scratch_socket.close()
+                        print("Restarting the scratch handler in 5 seconds.")
+                        sleep(4)
+                        scratch_socket = create_socket(self.host, PORT)
+                        num_socket_start +=1
+                        # make scratch aware of the input pins
+                        broadcast_all_input_pins()
 
     def sensor_update(self, data):
         index_is_data = False  # ignore the loop contents if not sensor
@@ -145,7 +169,14 @@ def create_socket(host, port):
         print("Could not find MESH session at %s:%s" % (host, port))
         sys.exit(1)
 
+    scratch_sock.settimeout(SOCKET_TIMEOUT)
     return scratch_sock
+
+
+def broadcast_all_input_pins():
+    for i in range(len(SCRATCH_SENSOR_NAME_INPUT)):
+        broadcast_pin_update(i, 0)
+
 
 if __name__ == '__main__':
     # has the hostname been given?
@@ -157,8 +188,6 @@ if __name__ == '__main__':
     scratch_socket = create_socket(host, PORT)
     print('Connected.')
 
-    scratch_socket.settimeout(SOCKET_TIMEOUT)
-
     pfd = pfio.PiFaceDigital()
 
     # hook each input to the callback function
@@ -166,9 +195,10 @@ if __name__ == '__main__':
     inputlistener = pfio.InputEventListener(chip=pfd)
     for i in range(len(SCRATCH_SENSOR_NAME_INPUT)):
         inputlistener.register(i, pfio.IODIR_BOTH, input_handler)
-        broadcast_pin_update(i, 0)  # make scratch aware of the input pins
 
-    scratchlistener = ScratchListener()
+    broadcast_all_input_pins()  # make scratch aware of the input pins
+
+    scratchlistener = ScratchListener(host)
     scratchlistener.start()
 
     try:
