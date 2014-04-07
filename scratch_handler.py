@@ -65,7 +65,7 @@ class ScratchListener(threading.Thread):
         global scratch_socket
         while self.alive:
             try:
-                data = scratch_socket.recv(BUFFER_SIZE).decode('utf-8')
+                data = scratch_socket.recv(BUFFER_SIZE).decode('utf-8','replace')
                 data = data[4:]  # get rid of the length info
 
             except socket.timeout:  # if we timeout, re-loop
